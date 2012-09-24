@@ -13,7 +13,8 @@
   [:use-macros [c2.util :only [p pp bind!]]]
   [:use [c2.core :only [unify style]]
         [dixon.grid :only [populate-grid empty-grid grid-step]]]
-  [:require [c2.scale :as scale]])
+  [:require [c2.scale :as scale]
+            [goog.dom :as dom]])
 
 (defn docycle [grid w h onfunc]
   (bind! "#board" 
@@ -21,11 +22,11 @@
                        "margin: auto;"
                        "height:" 700 ";"
                        "width:" 700 ";")}
-    (unify (for [x (range w) y (range h) :when (onfunc grid y x)]
+    (unify (for [x (range w) y (range h) :when (not= nil (onfunc grid y x))]
               [x y])
         (fn [[x y]]
           (let [css-class (if (onfunc grid y x) "box-on" "box-off")]
-            [:rect.box {:x (* 20 x) :y (* 20 y) :height 24 :width 24
+            [:rect {:x (* 20 x) :y (* 20 y) :height 24 :width 24
                   :class css-class :rx 3}] )))
                                   ]))
 
@@ -42,4 +43,9 @@
   (swap! grid-atom grid-step)
   (docycle @grid-atom 10 10 grid-is-on))
 
-(js/setInterval #(nextloop) (/ 1000 30))
+(defn animation-loop []
+  (.requestAnimationFrame (dom/getWindow) animation-loop)
+  (nextloop))
+
+(animation-loop)
+;(js/setInterval #(nextloop) (/ 1000 30))

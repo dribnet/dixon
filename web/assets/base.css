@@ -1,6 +1,6 @@
 body { background-color:white; }
-rect.box-off { fill:white; 
-               opacity: 0;
+rect.box-off { fill:red; 
+               opacity: 1;
                -webkit-transition: fill 0.05s linear;
                -webkit-transition: opacity 0.05s linear;
              }
